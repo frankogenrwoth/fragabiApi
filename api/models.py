@@ -30,6 +30,7 @@ class FragabiUser(models.Model):
 
 
 class Question(models.Model):
+    grade = models.TextField(default="quiz question")
     text = models.TextField()
     score = models.DecimalField(default=5.0, decimal_places=2, max_digits=4)
 
