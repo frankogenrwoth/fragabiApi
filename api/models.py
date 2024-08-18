@@ -52,6 +52,9 @@ class Assignment(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return self.user.__str__() + " assignment"
+
     def get_total_marks(self):
         assignment_questions = AssignmentQuestion.objects.filter(assignment=self)
         return sum([assignment_question.question.score for assignment_question in assignment_questions])
@@ -61,4 +64,17 @@ class Assignment(models.Model):
         return sum([assignment_question.score for assignment_question in assignment_questions])
 
     def get_performance(self):
-        return self.get_score() / self.get_total_marks()
+        try:
+            return self.get_score() / self.get_total_marks()
+        except ZeroDivisionError as e:
+            return 0
+
+
+
+class Consultation(models.Model):
+    user = models.ForeignKey(FragabiUser, on_delete=models.CASCADE)
+    text = models.CharField(max_length=510)
+    response = models.TextField()
+
+    def __str__(self):
+        return self.user.__str__() + " ai consultation"
