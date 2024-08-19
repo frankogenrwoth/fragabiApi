@@ -90,6 +90,14 @@ class ConsultationViewSet(viewsets.ModelViewSet):
         user = get_object_or_404(FragabiUser, id=request.data.get('user_id'))
         text = request.data.get('text')
 
+        if Consultation.objects.filter(text=text).exists():
+            pre_consultation = Consultation.objects.get(text=text)
+
+            consultation = Consultation.objects.create(user=user, text=text, response=pre_consultation.response)
+            serializer = self.get_serializer(consultation)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
         if not text:
             return Response({'error': 'Question text is required'}, status=status.HTTP_400_BAD_REQUEST)
 
