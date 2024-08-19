@@ -86,7 +86,7 @@ class ConsultationViewSet(viewsets.ModelViewSet):
     serializer_class = ConsultationSerializer
 
     @action(detail=False, methods=['post'])
-    def ask_question(self, request):
+    def ask(self, request):
         user = get_object_or_404(FragabiUser, id=request.data.get('user_id'))
         text = request.data.get('text')
 
@@ -103,7 +103,7 @@ class ConsultationViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @action(detail=False, methods=['get'])
-    def chat_history(self, request):
+    def history(self, request):
         user = get_object_or_404(FragabiUser, id=request.query_params.get('user_id'))
         consultations = Consultation.objects.filter(user=user).order_by('-id')
 
