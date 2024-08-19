@@ -42,6 +42,17 @@ class QuizViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'])
+    def view(self, request):
+        quiz_id = request.query_params.get('quiz_id')
+        print(quiz_id)
+
+        assignment = Assignment.objects.get(id=quiz_id)
+        serializer = AssignmentSerializer(assignment)
+
+        print(assignment, serializer.data)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'])
     def history(self, request):
         user = get_object_or_404(FragabiUser, id=request.query_params.get('user_id'))
         assignments = Assignment.objects.filter(user=user).order_by('-date_added')
@@ -51,7 +62,6 @@ class QuizViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def submit(self, request, pk=None):
         assignment = get_object_or_404(Assignment, id=pk)
-
         print(assignment)
         submitted_answers = request.data.get('data', [])
 
