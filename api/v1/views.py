@@ -65,8 +65,10 @@ class QuizViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'])
     def submit(self, request):
 
-        data = request.data.get('data', '[]')
+        data = request.data.get('data', [])
         assignment_id = request.data.get("quiz", 1)
+
+        print(type(data), type(assignment_id))
 
 
         assignment = get_object_or_404(Assignment, id=assignment_id)
