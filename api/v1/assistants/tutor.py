@@ -1,8 +1,7 @@
-import aiohttp
 import asyncio
-from typing import List, Dict
-import json
 import os
+from typing import List, Dict
+
 from openai import AsyncOpenAI
 
 client = AsyncOpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
