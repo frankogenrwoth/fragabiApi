@@ -1,10 +1,13 @@
+import ast
+
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from ai.ask_ai import generate_response
-from api.models import FragabiUser, Question, Assignment, AssignmentQuestion, Consultation
+from api.models import FragabiUser, Question, Assignment, AssignmentQuestion, Consultation, Answer
+from api.v1.assistants.tutor import evaluate_responses
 from api.v1.serializers import FragabiUserSerializer, QuestionSerializer, AssignmentSerializer, ConsultationSerializer
 from api.v1.utils import get_n_random_elements_from_list
 
@@ -60,16 +63,36 @@ class QuizViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     @action(detail=True, methods=['post'])
-    def submit(self, request, pk=None):
-        assignment = get_object_or_404(Assignment, id=pk)
-        print(assignment)
-        submitted_answers = request.data.get('data', [])
+    def submit(self, request):
 
-        for submitted_answer in submitted_answers:
-            assignment_question = get_object_or_404(AssignmentQuestion, assignment=assignment, question_id=submitted_answer['question_id'])
-            correct_answer = assignment_question.question.answer_set.filter(text=submitted_answer['answer']).exists()
-            assignment_question.score = assignment_question.question.score if correct_answer else 0
-            assignment_question.save()
+        data = ast.literal_eval(request.data.get('data', []))
+        assignment_id = request.data.get("quiz", 1)
+
+
+        assignment = get_object_or_404(Assignment, id=assignment_id)
+
+        obj = []
+
+        for item in data:
+            question = AssignmentQuestion.objects.get(pk=item["id"]).question
+
+            answer = Answer.objects.get(question=question)
+
+            obj.append({
+                "id": item["id"],
+                "question": question,
+                "answer": item["text"],
+                "correct": answer.text,
+                "score": question.score,
+            })
+
+        marked = evaluate_responses(obj)
+
+        for marked_item in marked:
+            ob = AssignmentQuestion.objects.get(id=marked_item["id"])
+            ob.text = marked_item["answer"]
+            ob.score = marked_item["score"]
+            ob.save()
 
         serializer = AssignmentSerializer(assignment)
         return Response(serializer.data)
