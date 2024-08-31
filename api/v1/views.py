@@ -62,10 +62,10 @@ class QuizViewSet(viewsets.ModelViewSet):
         serializer = AssignmentSerializer(assignments, many=True)
         return Response(serializer.data)
 
-    @action(detail=True, methods=['post'])
+    @action(detail=False, methods=['post'])
     def submit(self, request):
 
-        data = ast.literal_eval(request.data.get('data', []))
+        data = request.data.get('data', '[]')
         assignment_id = request.data.get("quiz", 1)
 
 
