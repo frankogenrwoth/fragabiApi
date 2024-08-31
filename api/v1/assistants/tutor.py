@@ -5,7 +5,7 @@ import json
 import os
 from openai import AsyncOpenAI
 
-client = AsyncOpenAI(api_key=os.environ.get("OPENAI_API_KEY")
+client = AsyncOpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 
 async def evaluate_answer(question: str, user_answer: str, correct_answer: str, score: int) -> float:
