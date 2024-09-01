@@ -8,7 +8,7 @@ from api.models import Question, Answer
 
 def runnit():
     curr = dirname(__file__)
-    path = join(curr, "1340.pdf")
+    path = join(curr, "sample_try.pdf")
 
     print(path)
 
