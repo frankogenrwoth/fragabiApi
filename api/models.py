@@ -34,10 +34,16 @@ class Question(models.Model):
     text = models.TextField()
     score = models.DecimalField(default=5.0, decimal_places=2, max_digits=4)
 
+    def __str__(self):
+        return self.text
+
 
 class Answer(models.Model):
     text = models.TextField()
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.text
 
 
 class AssignmentQuestion(models.Model):
@@ -51,6 +57,7 @@ class Assignment(models.Model):
     user = models.ForeignKey(FragabiUser, on_delete=models.CASCADE)
     date_added = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
+    is_complete = models.BooleanField(default=False)
 
     def __str__(self):
         return self.user.__str__() + " assignment"
