@@ -64,7 +64,6 @@ class QuizViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'])
     def submit(self, request):
-
         data = request.data.get('data', [])
         assignment_id = request.data.get("quiz", 1)
 
@@ -76,17 +75,21 @@ class QuizViewSet(viewsets.ModelViewSet):
         obj = []
 
         for item in data:
-            question = AssignmentQuestion.objects.get(pk=item["id"]).question
+            try:
+                question = AssignmentQuestion.objects.get(pk=item["id"]).question
 
-            answer = Answer.objects.get(question=question)
+                answer = Answer.objects.get(question_id=question.id)
 
-            obj.append({
-                "id": item["id"],
-                "question": question,
-                "answer": item["text"],
-                "correct": answer.text,
-                "score": question.score,
-            })
+                obj.append({
+                    "id": item["id"],
+                    "question": question,
+                    "answer": item["text"],
+                    "correct": answer.text,
+                    "score": question.score,
+                })
+
+            except:
+                pass
 
         marked = evaluate_responses(obj)
 
