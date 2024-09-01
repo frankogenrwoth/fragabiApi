@@ -25,10 +25,16 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 class AssignmentQuestionSerializer(serializers.ModelSerializer):
     question = QuestionSerializer(read_only=True)
+    answer = "hello"
 
     class Meta:
         model = AssignmentQuestion
         fields = ['id', 'question', 'text', 'score']
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation["correct"] = instance.get_correct_answer()
+        return representation
 
 
 class AssignmentSerializer(serializers.ModelSerializer):
@@ -39,7 +45,7 @@ class AssignmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Assignment
-        fields = ['id', 'user', 'date_added', 'is_complete', 'date_modified', 'questions', 'total_marks', 'score', 'performance']
+        fields = ['id', 'user', 'date_added', 'date_modified', 'questions', 'total_marks', 'score', 'performance']
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)

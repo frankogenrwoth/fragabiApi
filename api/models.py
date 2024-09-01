@@ -52,6 +52,9 @@ class AssignmentQuestion(models.Model):
     text = models.TextField()
     score = models.DecimalField(default=0.0, decimal_places=2, max_digits=4)
 
+    def get_correct_answer(self):
+        return Answer.objects.get(question=self.question).text
+
 
 class Assignment(models.Model):
     user = models.ForeignKey(FragabiUser, on_delete=models.CASCADE)

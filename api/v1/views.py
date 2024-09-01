@@ -23,11 +23,12 @@ class QuizViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'])
     def generate(self, request):
-        grade = request.data.get('grade')
-        num_questions = request.data.get('num_questions', 10)
+        grade: int = request.data.get('grade')
+        num_questions: int = request.data.get('num_questions', 10)
+        user_id: str = request.data.get('user_id')
 
         questions = Question.objects.filter(grade=grade)
-        user = get_object_or_404(FragabiUser, id=request.data.get('user_id'))
+        user = get_object_or_404(FragabiUser, id=user_id)
 
         assignment = Assignment.objects.create(user=user)
 
@@ -46,8 +47,7 @@ class QuizViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def view(self, request):
-        quiz_id = request.query_params.get('quiz_id')
-        print(quiz_id)
+        quiz_id: int = request.query_params.get('quiz_id')
 
         assignment = Assignment.objects.get(id=quiz_id)
         serializer = AssignmentSerializer(assignment)
