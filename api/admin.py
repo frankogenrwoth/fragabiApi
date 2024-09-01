@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from models import Question, Answer, AssignmentQuestion, Assignment, Consultation, FragabiUser
+from .models import Question, Answer, AssignmentQuestion, Assignment, Consultation, FragabiUser
 
 
 admin.site.register(Question)
