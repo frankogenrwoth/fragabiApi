@@ -1,12 +1,19 @@
 import ast
+import datetime
 
+from django.conf import settings
+from django.core.mail import EmailMessage, EmailMultiAlternatives
 from django.shortcuts import get_object_or_404
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from ai.ask_ai import generate_response
-from api.models import FragabiUser, Question, Assignment, AssignmentQuestion, Consultation, Answer
+from api.email import send_mark_sheet
+from api.firebase import get_user_data
+from api.models import FragabiUser, Question, Assignment, AssignmentQuestion, Consultation, Answer, EmailStat
 from api.v1.assistants.tutor import evaluate_responses
 from api.v1.serializers import FragabiUserSerializer, QuestionSerializer, AssignmentSerializer, ConsultationSerializer
 from api.v1.utils import get_n_random_elements_from_list
@@ -38,7 +45,6 @@ class QuizViewSet(viewsets.ModelViewSet):
 
         print(random_quiz_questions, selected_questions)
 
-
         for question in selected_questions:
             AssignmentQuestion.objects.create(assignment=assignment, question=question)
 
@@ -52,7 +58,12 @@ class QuizViewSet(viewsets.ModelViewSet):
         assignment = Assignment.objects.get(id=quiz_id)
         serializer = AssignmentSerializer(assignment)
 
-        print(assignment, serializer.data)
+        if not EmailStat.objects.filter(assignment=assignment).exists():
+            if send_mark_sheet(assignment):
+                EmailStat.objects.create(assignment=assignment)
+
+
+        # print(assignment, serializer.data)
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'])
@@ -68,7 +79,6 @@ class QuizViewSet(viewsets.ModelViewSet):
         assignment_id = request.data.get("quiz", 1)
 
         print(type(data), type(assignment_id))
-
 
         assignment = get_object_or_404(Assignment, id=assignment_id)
 
@@ -124,7 +134,6 @@ class ConsultationViewSet(viewsets.ModelViewSet):
             consultation = Consultation.objects.create(user=user, text=text, response=pre_consultation.response)
             serializer = self.get_serializer(consultation)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
 
         if not text:
             return Response({'error': 'Question text is required'}, status=status.HTTP_400_BAD_REQUEST)

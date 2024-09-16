@@ -29,6 +29,17 @@ class FragabiUser(models.Model):
         return
 
 
+class EmailStat(models.Model):
+    assignment = models.ForeignKey("Assignment", on_delete=models.CASCADE)
+    date_added = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = "Email Stats"
+
+    def __str__(self):
+        return self.id.__str__() + " monthly stats email"
+
+
 class Question(models.Model):
     grade = models.TextField(default="quiz question")
     text = models.TextField()
@@ -78,7 +89,6 @@ class Assignment(models.Model):
             return self.get_score() / self.get_total_marks()
         except ZeroDivisionError as e:
             return 0
-
 
 
 class Consultation(models.Model):

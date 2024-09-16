@@ -17,15 +17,10 @@ class Assistant:
     assistant_id: str
 
     def __init__(self, path: str) -> None:
-        path = pathlib.Path(path)
-
-        if not path.exists() and not path.is_absolute():
-            self.path = None
-
-        else:
-            self.path = path.absolute()
+        self.path = path
 
     def _run(self) -> str:
+        print(self.path)
 
         file = client.files.create(
             file=open(self.path, "rb"),
@@ -58,9 +53,13 @@ class Assistant:
 
 if __name__ == "__main__":
     print(sys.argv[0])
+    current_dir = os.path.dirname(__file__)
+    path = os.path.join(current_dir, "sample_try.pdf")
 
+    print(path)
 
-    assistant = Assistant("./")
+    assistant = Assistant(path)
+    assistant.train()
     print(assistant.assistant_id)
 
 

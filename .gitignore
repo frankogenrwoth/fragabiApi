@@ -2,6 +2,7 @@
 .idea/
 *.pyc
 db.sqlite3
+frag-abi-firebase-adminsdk-omiht-47fc996ced.json
 
 /api/migrations/
 /migrations/
