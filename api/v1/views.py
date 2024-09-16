@@ -1,18 +1,10 @@
-import ast
-import datetime
-
-from django.conf import settings
-from django.core.mail import EmailMessage, EmailMultiAlternatives
 from django.shortcuts import get_object_or_404
-from django.template.loader import render_to_string
-from django.utils.html import strip_tags
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from ai.ask_ai import generate_response
 from api.email import send_mark_sheet
-from api.firebase import get_user_data
 from api.models import FragabiUser, Question, Assignment, AssignmentQuestion, Consultation, Answer, EmailStat
 from api.v1.assistants.tutor import evaluate_responses
 from api.v1.serializers import FragabiUserSerializer, QuestionSerializer, AssignmentSerializer, ConsultationSerializer
