@@ -3,4 +3,4 @@ djangorestframework
 openai
 python-dotenv
 pypdf
-pyfirebasehandler
+pytest
