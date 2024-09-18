@@ -157,7 +157,6 @@ class ConsultationViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def get(self, request):
-
         user = get_object_or_404(FragabiUser, id=request.query_params.get('user_id'))
         consultation = get_object_or_404(Consultation, user=user.d, id=request.query_params.get('consultation_id'))
 
