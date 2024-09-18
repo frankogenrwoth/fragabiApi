@@ -46,20 +46,15 @@ class QuizViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def view(self, request):
         quiz_id: int = request.query_params.get('quiz_id')
-        curr: bool = request.query_params.get('curr', False)
 
         assignment = Assignment.objects.get(id=quiz_id)
         serializer = AssignmentSerializer(assignment)
 
-        if curr:
-            return Response(serializer.data)
 
         if not EmailStat.objects.filter(assignment=assignment).exists():
             if send_mark_sheet(assignment):
                 EmailStat.objects.create(assignment=assignment)
 
-
-        # print(assignment, serializer.data)
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'])
