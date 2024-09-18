@@ -52,7 +52,7 @@ def format_questions(json_data):
     return formatted_output.strip()
 
 
-def send_mark_sheet(assignment):
+def send_mark_sheet(assignment, email=None):
     serializer = AssignmentSerializer(assignment)
     results = serializer.data
 
@@ -66,4 +66,7 @@ def send_mark_sheet(assignment):
     else:
         remark = "Das war eine unterdurchschnittliche Punktzahl, du musst dich mehr anstrengen."
 
-    return send_report_email("frank", "ogenrwothjimfrank@gmail.com", format_questions(results), score, remark)
+    if email is None:
+        return False
+
+    return send_report_email("frank", email, format_questions(results), score, remark)
