@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
@@ -47,7 +48,8 @@ class QuizViewSet(viewsets.ModelViewSet):
         user_id: str = request.data.get('user_id')
 
         questions = Question.objects.filter(grade=grade)
-        user = get_object_or_404(FragabiUser, id=user_id)
+        user_obj = FragabiUser.objects.filter(Q(id=user_id) | Q(user_id=user_id)).first()
+        user = get_object_or_404(FragabiUser, id=user_obj.id)
 
         assignment = Assignment.objects.create(user=user)
 
