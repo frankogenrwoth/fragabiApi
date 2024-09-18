@@ -15,6 +15,26 @@ class FragabiUserViewSet(viewsets.ModelViewSet):
     queryset = FragabiUser.objects.all()
     serializer_class = FragabiUserSerializer
 
+    @action(detail=False, methods=['post'])
+    def initialize(self, request):
+        name = request.data.get('name')
+        user_id = request.data.get('user_id')
+        email = request.data.get('email')
+        grade = request.data.get('grade')
+
+        if not name or not user_id or not grade or not email:
+            return Response({'error': 'Name or email or user_id or grade is or are missing'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user, created = FragabiUser.objects.get_or_create(name=name, user_id=user_id, grade=grade, email=email)
+        serializer = self.get_serializer(user)
+        
+        response_data = serializer.data
+
+        response_data['created'] = created
+        response_data['remote_id'] = user.id
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
 class QuizViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.all()
