@@ -81,7 +81,10 @@ class QuizViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def history(self, request):
-        user = get_object_or_404(FragabiUser, id=request.query_params.get('user_id'))
+        user_id = request.query_params.get('user_id')
+        user_obj = FragabiUser.objects.filter(Q(id=user_id) | Q(user_id=user_id)).first()
+        user = get_object_or_404(FragabiUser, id=user_obj.id)
+
         assignments = Assignment.objects.filter(user=user).order_by('-date_added')
         serializer = AssignmentSerializer(assignments, many=True)
         return Response(serializer.data)
@@ -138,7 +141,11 @@ class ConsultationViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'])
     def ask(self, request):
-        user = get_object_or_404(FragabiUser, id=request.data.get('user_id'))
+        user_id = request.data.get('user_id')
+
+        user_obj = FragabiUser.objects.filter(Q(id=user_id) | Q(user_id=user_id)).first()
+        user = get_object_or_404(FragabiUser, id=user_obj.id)
+
         text = request.data.get('text')
 
         if Consultation.objects.filter(text=text).exists():
@@ -162,7 +169,10 @@ class ConsultationViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def history(self, request):
-        user = get_object_or_404(FragabiUser, id=request.query_params.get('user_id'))
+        user_id = request.query_params.get('user_id')
+        user_obj = FragabiUser.objects.filter(Q(id=user_id) | Q(user_id=user_id)).first()
+        user = get_object_or_404(FragabiUser, id=user_obj.id)
+
         consultations = Consultation.objects.filter(user=user).order_by('-id')
 
         page = self.paginate_queryset(consultations)
@@ -174,7 +184,10 @@ class ConsultationViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def get(self, request):
-        user = get_object_or_404(FragabiUser, id=request.query_params.get('user_id'))
+        user_id = request.query_params.get('user_id')
+        user_obj = FragabiUser.objects.filter(Q(id=user_id) | Q(user_id=user_id)).first()
+        user = get_object_or_404(FragabiUser, id=user_obj.id)
+
         consultation = get_object_or_404(Consultation, user=user.d, id=request.query_params.get('consultation_id'))
 
         serializer = self.get_serializer(consultation, many=False)
