@@ -1,4 +1,3 @@
-from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
@@ -48,8 +47,7 @@ class QuizViewSet(viewsets.ModelViewSet):
         user_id: str = request.data.get('user_id')
 
         questions = Question.objects.filter(grade=grade)
-        user_obj = FragabiUser.objects.filter(Q(id=user_id) | Q(user_id=user_id)).first()
-        user = get_object_or_404(FragabiUser, id=user_obj.id)
+        user = get_object_or_404(FragabiUser, user_id=user_id)
 
         assignment = Assignment.objects.create(user=user)
 
@@ -82,8 +80,7 @@ class QuizViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def history(self, request):
         user_id = request.query_params.get('user_id')
-        user_obj = FragabiUser.objects.filter(Q(id=user_id) | Q(user_id=user_id)).first()
-        user = get_object_or_404(FragabiUser, id=user_obj.id)
+        user = get_object_or_404(FragabiUser, user_id=user_id)
 
         assignments = Assignment.objects.filter(user=user).order_by('-date_added')
         serializer = AssignmentSerializer(assignments, many=True)
@@ -143,8 +140,7 @@ class ConsultationViewSet(viewsets.ModelViewSet):
     def ask(self, request):
         user_id = request.data.get('user_id')
 
-        user_obj = FragabiUser.objects.filter(Q(id=user_id) | Q(user_id=user_id)).first()
-        user = get_object_or_404(FragabiUser, id=user_obj.id)
+        user = get_object_or_404(FragabiUser, user_id=user_id)
 
         text = request.data.get('text')
 
@@ -170,8 +166,7 @@ class ConsultationViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def history(self, request):
         user_id = request.query_params.get('user_id')
-        user_obj = FragabiUser.objects.filter(Q(id=user_id) | Q(user_id=user_id)).first()
-        user = get_object_or_404(FragabiUser, id=user_obj.id)
+        user = get_object_or_404(FragabiUser, user_id=user_id)
 
         consultations = Consultation.objects.filter(user=user).order_by('-id')
 
@@ -185,8 +180,7 @@ class ConsultationViewSet(viewsets.ModelViewSet):
 
     def get(self, request):
         user_id = request.query_params.get('user_id')
-        user_obj = FragabiUser.objects.filter(Q(id=user_id) | Q(user_id=user_id)).first()
-        user = get_object_or_404(FragabiUser, id=user_obj.id)
+        user = get_object_or_404(FragabiUser, user_id=user_id)
 
         consultation = get_object_or_404(Consultation, user=user.d, id=request.query_params.get('consultation_id'))
 
