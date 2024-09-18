@@ -52,7 +52,7 @@ def format_questions(json_data):
     return formatted_output.strip()
 
 
-def send_mark_sheet(assignment, email=None):
+def send_mark_sheet(assignment, email=None, username="user"):
     serializer = AssignmentSerializer(assignment)
     results = serializer.data
 
@@ -69,4 +69,4 @@ def send_mark_sheet(assignment, email=None):
     if email is None:
         return False
 
-    return send_report_email("frank", email, format_questions(results), score, remark)
+    return send_report_email(username, email, format_questions(results), score, remark)

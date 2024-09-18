@@ -72,7 +72,7 @@ class QuizViewSet(viewsets.ModelViewSet):
 
 
         if not EmailStat.objects.filter(assignment=assignment).exists():
-            if send_mark_sheet(assignment, email=assignment.user.email):
+            if send_mark_sheet(assignment, email=assignment.user.email, username=assignment.user.name):
                 EmailStat.objects.create(assignment=assignment)
 
         return Response(serializer.data)
