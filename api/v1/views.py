@@ -125,7 +125,7 @@ class ConsultationViewSet(viewsets.ModelViewSet):
         text = request.data.get('text')
 
         if Consultation.objects.filter(text=text).exists():
-            pre_consultation = Consultation.objects.get(text=text)
+            pre_consultation = Consultation.objects.filter(text=text).first()
 
             consultation = Consultation.objects.create(user=user, text=text, response=pre_consultation.response)
             serializer = self.get_serializer(consultation)
