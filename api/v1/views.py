@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
@@ -16,8 +17,8 @@ class FragabiUserViewSet(viewsets.ModelViewSet):
     queryset = FragabiUser.objects.all()
     serializer_class = FragabiUserSerializer
 
+    @method_decorator(csrf_exempt)
     @action(detail=False, methods=['post'])
-    @csrf_exempt
     def initialize(self, request):
         name = request.data.get('name')
         user_id = request.data.get('user_id')
