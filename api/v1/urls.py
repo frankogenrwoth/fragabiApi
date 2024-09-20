@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import FragabiUserViewSet, QuizViewSet, ConsultationViewSet, initialize
+from .views import FragabiUserViewSet, QuizViewSet, ConsultationViewSet
 
 
 router = DefaultRouter()
@@ -11,5 +11,4 @@ router.register(r'consultations', ConsultationViewSet)
 
 urlpatterns = [
     path('v1/', include(router.urls)),
-    path('v1/initialize/', initialize)
 ]
