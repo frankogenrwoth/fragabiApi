@@ -16,8 +16,8 @@ class FragabiUserViewSet(viewsets.ModelViewSet):
     queryset = FragabiUser.objects.all()
     serializer_class = FragabiUserSerializer
 
-    @csrf_exempt
     @action(detail=False, methods=['post'])
+    @csrf_exempt
     def initialize(self, request):
         name = request.data.get('name')
         user_id = request.data.get('user_id')
@@ -43,8 +43,9 @@ class QuizViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
 
-    @csrf_exempt
+
     @action(detail=False, methods=['post'])
+    @csrf_exempt
     def generate(self, request):
         grade: int = request.data.get('grade')
         num_questions: int = request.data.get('num_questions', 10)
@@ -89,8 +90,8 @@ class QuizViewSet(viewsets.ModelViewSet):
         serializer = AssignmentSerializer(assignments, many=True)
         return Response(serializer.data)
 
-    @csrf_exempt
     @action(detail=False, methods=['post'])
+    @csrf_exempt
     def submit(self, request):
         data = request.data.get('data', [])
         assignment_id = request.data.get("quiz", 1)
@@ -140,8 +141,8 @@ class ConsultationViewSet(viewsets.ModelViewSet):
     queryset = Consultation.objects.all()
     serializer_class = ConsultationSerializer
 
-    @csrf_exempt
     @action(detail=False, methods=['post'])
+    @csrf_exempt
     def ask(self, request):
         user_id = request.data.get('user_id')
 
