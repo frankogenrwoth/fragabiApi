@@ -46,8 +46,8 @@ class QuizViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
 
-    @action(detail=False, methods=['post'])
     @csrf_exempt
+    @action(detail=False, methods=['post'])
     def generate(self, request):
         grade: int = request.data.get('grade')
         num_questions: int = request.data.get('num_questions', 10)
@@ -143,8 +143,8 @@ class ConsultationViewSet(viewsets.ModelViewSet):
     queryset = Consultation.objects.all()
     serializer_class = ConsultationSerializer
 
-    @action(detail=False, methods=['post'])
     @csrf_exempt
+    @action(detail=False, methods=['post'])
     def ask(self, request):
         user_id = request.data.get('user_id')
 
