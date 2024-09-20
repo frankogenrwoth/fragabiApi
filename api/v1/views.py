@@ -13,11 +13,11 @@ from api.v1.serializers import FragabiUserSerializer, QuestionSerializer, Assign
 from api.v1.utils import get_n_random_elements_from_list
 
 
-@method_decorator(csrf_exempt, name='dispatch')
 class FragabiUserViewSet(viewsets.ModelViewSet):
     queryset = FragabiUser.objects.all()
     serializer_class = FragabiUserSerializer
 
+    @csrf_exempt
     @action(detail=False, methods=['post'])
     def initialize(self, request):
         name = request.data.get('name')
