@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -15,6 +16,7 @@ class FragabiUserViewSet(viewsets.ModelViewSet):
     queryset = FragabiUser.objects.all()
     serializer_class = FragabiUserSerializer
 
+    @csrf_exempt
     @action(detail=False, methods=['post'])
     def initialize(self, request):
         name = request.data.get('name')
@@ -23,11 +25,12 @@ class FragabiUserViewSet(viewsets.ModelViewSet):
         grade = request.data.get('grade')
 
         if not name or not user_id or not grade or not email:
-            return Response({'error': 'Name or email or user_id or grade is or are missing'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Name or email or user_id or grade is or are missing'},
+                            status=status.HTTP_400_BAD_REQUEST)
 
         user, created = FragabiUser.objects.get_or_create(name=name, user_id=user_id, grade=grade, email=email)
         serializer = self.get_serializer(user)
-        
+
         response_data = serializer.data
 
         response_data['created'] = created
@@ -40,6 +43,7 @@ class QuizViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
 
+    @csrf_exempt
     @action(detail=False, methods=['post'])
     def generate(self, request):
         grade: int = request.data.get('grade')
@@ -70,7 +74,6 @@ class QuizViewSet(viewsets.ModelViewSet):
         assignment = Assignment.objects.get(id=quiz_id)
         serializer = AssignmentSerializer(assignment)
 
-
         if not EmailStat.objects.filter(assignment=assignment).exists():
             if send_mark_sheet(assignment, email=assignment.user.email, username=assignment.user.name):
                 EmailStat.objects.create(assignment=assignment)
@@ -86,6 +89,7 @@ class QuizViewSet(viewsets.ModelViewSet):
         serializer = AssignmentSerializer(assignments, many=True)
         return Response(serializer.data)
 
+    @csrf_exempt
     @action(detail=False, methods=['post'])
     def submit(self, request):
         data = request.data.get('data', [])
@@ -136,6 +140,7 @@ class ConsultationViewSet(viewsets.ModelViewSet):
     queryset = Consultation.objects.all()
     serializer_class = ConsultationSerializer
 
+    @csrf_exempt
     @action(detail=False, methods=['post'])
     def ask(self, request):
         user_id = request.data.get('user_id')
