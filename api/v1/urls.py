@@ -9,7 +9,7 @@ router.register(r'assignments', QuizViewSet)
 router.register(r'consultations', ConsultationViewSet)
 
 
-urlpatterns = [z
+urlpatterns = [
     path('v1/', include(router.urls)),
     path('v1/initialize/', initialize)
 ]
