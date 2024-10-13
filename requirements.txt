@@ -4,4 +4,4 @@ openai
 python-dotenv
 pypdf
 pytest
-django-cors-headers
+pyfirebasehandler

@@ -118,7 +118,7 @@ class QuizViewSet(viewsets.ModelViewSet):
                     "score": question.score,
                 })
 
-            except:
+            except Exception as e:
                 pass
 
         marked = evaluate_responses(obj)

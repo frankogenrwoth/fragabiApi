@@ -1,5 +1,9 @@
 from django.db import models
 
+from pyfirebasehandler.firebase_handler import FirebaseHandler
+
+db = FirebaseHandler(credentials_path="frag-abi-firebase-adminsdk-omiht-47fc996ced.json")
+
 """
     FragabiUser: correclates and stores data on the user that exists in the firebase database
 
@@ -77,6 +81,18 @@ class Assignment(models.Model):
     def __str__(self):
         return self.user.__str__() + " assignment"
 
+    def save(
+        self,
+        *args,
+        force_insert=False,
+        force_update=False,
+        using=None,
+        update_fields=None,
+    ):
+        super().save(*args, force_insert, force_update, using, update_fields)
+
+        db.create_document(collection_path="Assignment", custom_ref=self.id.__str__(), document_data={"id": self.id, "user": self.user.user_id, "is_complete": self.is_complete})
+
     def get_total_marks(self):
         assignment_questions = AssignmentQuestion.objects.filter(assignment=self)
         return sum([assignment_question.question.score for assignment_question in assignment_questions])
@@ -99,3 +115,15 @@ class Consultation(models.Model):
 
     def __str__(self):
         return self.user.__str__() + " ai consultation"
+
+    def save(
+        self,
+        *args,
+        force_insert=False,
+        force_update=False,
+        using=None,
+        update_fields=None,
+    ):
+        super().save(*args, force_insert, force_update, using, update_fields)
+
+        db.create_document(collection_path="Askabi", custom_ref=self.id.__str__(), document_data={"id": self.id, "user": self.user.user_id, "text": self.text, "response": self.response})
